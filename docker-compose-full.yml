@@ -13,6 +13,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - dev_dbpgdata:/var/lib/postgresql/data/pgdata
 
@@ -60,19 +61,11 @@ services:
   mongodb:
     image: mongo
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mongo",
-          "--quiet",
-          "127.0.0.1/test",
-          "--eval",
-          "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'",
-        ]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 40s
+      start_period: 10s
     container_name: dev_mongodb
     restart: always
     environment:
