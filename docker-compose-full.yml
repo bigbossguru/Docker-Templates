@@ -1,0 +1,91 @@
+services:
+  postgres-db:
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    container_name: dev_postgresdb
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - dev_dbpgdata:/var/lib/postgresql/data/pgdata
+
+  postgres-pgadmin:
+    image: dpage/pgadmin4
+    container_name: dev_postgres_pgadmin
+    restart: always
+    ports:
+      - 8888:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pguser@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    volumes:
+      - dev_pgadmindata:/var/lib/pgadmin
+    depends_on:
+      - postgres-db
+
+  cache-redis:
+    image: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    command: redis-server
+    container_name: dev_redis_cache
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - dev_redisdata:/var/lib/redis
+      - dev_redisconfig:/usr/local/etc/redis/redis.conf
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: dev_rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbit
+      RABBITMQ_DEFAULT_PASS: myrabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  mongodb:
+    image: mongo
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongo",
+          "--quiet",
+          "127.0.0.1/test",
+          "--eval",
+          "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    container_name: dev_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mymongo
+    ports:
+      - 27017:27017
+    volumes:
+      - dev_mongodbdata:/data/db
+
+volumes:
+  dev_dbpgdata:
+  dev_pgadmindata:
+  dev_redisdata:
+  dev_redisconfig:
+  dev_mongodbdata:
