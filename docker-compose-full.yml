@@ -49,6 +49,11 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 15s
+      retries: 3
     container_name: dev_rabbitmq
     restart: always
     environment:
