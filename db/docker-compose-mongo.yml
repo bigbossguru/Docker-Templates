@@ -1,0 +1,21 @@
+services:
+  mongodb:
+    image: mongo
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    container_name: dev_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mymongo
+    ports:
+      - 27017:27017
+    volumes:
+      - dev_mongodbdata:/data/db
+
+volumes:
+  dev_mongodbdata:
