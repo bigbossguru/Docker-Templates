@@ -1,6 +1,8 @@
 services:
   ngrok:
-    image: ngrok/ngrok:alpine
+    build:
+      context: .
+      dockerfile: ./ngrok.Dockerfile
     container_name: dev_ngrok
     restart: always
     environment:
@@ -10,8 +12,6 @@ services:
       - "--all"
       - "--config"
       - "/etc/ngrok.yml"
-    volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
     ports:
       - 4040:4040
     networks:
