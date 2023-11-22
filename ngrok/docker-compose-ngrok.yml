@@ -1,12 +1,12 @@
 services:
   ngroktunnel:
-    build:
-      context: .
-      dockerfile: ./ngrok.Dockerfile
+    image: ngrok/ngrok:alpine
     container_name: ngroktunnel
     restart: always
     environment:
       NGROK_AUTHTOKEN: <CHANGE ME !!!!!!>
+    volumes:
+      - ./config/ngrok.yml:/etc/ngrok.yml:ro
     command:
       - "start"
       - "--all"
