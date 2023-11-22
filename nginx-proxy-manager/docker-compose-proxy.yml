@@ -1,8 +1,8 @@
 services:
-  nginxmanager:
+  nginxproxymanager:
     image: jc21/nginx-proxy-manager:latest
     restart: always
-    container_name: nginxmanager
+    container_name: nginxproxymanager
     ports:
       - 80:80
       - 443:443
@@ -14,19 +14,24 @@ services:
       DB_MYSQL_PASSWORD: "npm"
       DB_MYSQL_NAME: "npm"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - nginxproxymanager-data:/data
+      - nginxproxymanager-ssl:/etc/letsencrypt
     depends_on:
       - nginxdb
 
-  nginxdb:
+  nginxproxymanagerdb:
     image: jc21/mariadb-aria:latest
     restart: always
-    container_name: nginxdb
+    container_name: nginxproxymanagerdb
     environment:
       MYSQL_ROOT_PASSWORD: "npm"
       MYSQL_DATABASE: "npm"
       MYSQL_USER: "npm"
       MYSQL_PASSWORD: "npm"
     volumes:
-      - ./mysql:/var/lib/mysql
+      - nginxproxymanager-db:/var/lib/mysql
+
+volumes:
+  nginxproxymanager-data:
+  nginxproxymanager-ssl:
+  nginxproxymanager-db:
