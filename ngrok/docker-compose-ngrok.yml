@@ -1,9 +1,9 @@
 services:
-  ngrok:
+  ngroktunnel:
     build:
       context: .
       dockerfile: ./ngrok.Dockerfile
-    container_name: dev_ngrok
+    container_name: ngroktunnel
     restart: always
     environment:
       NGROK_AUTHTOKEN: <CHANGE ME !!!!!!>
@@ -15,9 +15,7 @@ services:
     ports:
       - 4040:4040
     networks:
-      - network
+      - ngroktunnel
 
 networks:
-  network:
-    driver: bridge
-    name: ngrok_network
+  ngroktunnel:

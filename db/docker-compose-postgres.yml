@@ -1,12 +1,12 @@
 services:
-  postgres-db:
+  postgresdb:
     image: postgres:alpine
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-    container_name: dev_postgresdb
+    container_name: postgresdb
     restart: always
     ports:
       - 5432:5432
@@ -15,22 +15,22 @@ services:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - dev_dbpgdata:/var/lib/postgresql/data/pgdata
+      - postgres-data:/var/lib/postgresql/data/pgdata
 
-  postgres-pgadmin:
+  pgadmin:
     image: dpage/pgadmin4
-    container_name: dev_postgres_pgadmin
+    container_name: pgadmin
     restart: always
     ports:
-      - 8888:80
+      - 8087:80
     environment:
-      PGADMIN_DEFAULT_EMAIL: pguser@pgadmin.com
+      PGADMIN_DEFAULT_EMAIL: pgadmin@pgadmin.com
       PGADMIN_DEFAULT_PASSWORD: pgadmin
     volumes:
-      - dev_pgadmindata:/var/lib/pgadmin
+      - pgadmin-data:/var/lib/pgadmin
     depends_on:
-      - postgres-db
+      - postgresdb
 
 volumes:
-  dev_dbpgdata:
-  dev_pgadmindata:
+  postgres-data:
+  pgadmin-data:

@@ -7,7 +7,7 @@ services:
       timeout: 10s
       retries: 5
       start_period: 10s
-    container_name: dev_mongodb
+    container_name: mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
@@ -15,7 +15,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - dev_mongodbdata:/data/db
+      - mongodb-data:/data/db
 
 volumes:
-  dev_mongodbdata:
+  mongodb-data:
